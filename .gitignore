@@ -1,0 +1,15 @@
+# Ignorar entorno virtual
+venv/
+
+# Ignorar archivos temporales y de caché de Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Ignorar archivos de base de datos SQLite locales si no quieres que suban
+# Solo si el archivo .db no lo necesitas en el repositorio remoto.
+# En tu caso, *necesitamos* el ultratech.db en Render, así que NO lo ignores.
+# Pero si tuvieras otros archivos de base de datos temporales, los pondrías aquí.
+
+# Ignorar archivos de VS Code específicos del usuario (opcional)
+.vscode/
