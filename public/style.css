@@ -22,7 +22,7 @@ body {
     background-color: #ffffff;
     /* Fondo blanco puro para el contenedor principal */
     margin: 30px auto;
-    /* Más margen superior/inferior para el contenedor */
+    /* Más margen superior/inferior y centrado horizontal */
     padding: 35px;
     /* Más padding interno */
     border-radius: 10px;
@@ -40,36 +40,56 @@ body {
     /* Espaciado entre secciones principales */
 }
 
-/* Encabezado */
+/* --- Encabezado --- */
 header {
     text-align: center;
     margin-bottom: 20px;
-    /* Reducimos un poco el margen ya que el container tiene gap */
+    /* Mantener espacio debajo del encabezado */
+    width: 100%;
+    /* Asegurarse de que ocupe todo el ancho para centrar */
 }
 
-.logo {
-    font-family: 'Roboto', sans-serif;
-    /* O una fuente bold/moderna si tienes una */
-    font-size: 3em;
-    /* Tamaño de fuente más grande para el logo */
-    color: #000000;
-    /* Negro puro para el logo */
-    margin-bottom: 8px;
-    font-weight: 900;
-    /* Extra bold */
-    letter-spacing: -1px;
-    /* Ajuste de espaciado para el logo */
+.logo-container {
+    /* Contenedor del logo (el h1) */
+    display: flex;
+    justify-content: center;
+    /* Centra el logo horizontalmente */
+    align-items: center;
+    /* Centra el logo verticalmente si el logo-container tiene altura */
+    padding: 15px 25px;
+    /* Más padding alrededor del logo dentro del fondo */
+    background-color: #000000;
+    /* Fondo negro puro para el logo */
+    border-radius: 10px;
+    /* Bordes un poco más redondeados */
+    margin: 0 auto 20px auto;
+    /* Centra el contenedor del logo y le da margen inferior */
+    /* Importante: para que el background se ajuste al contenido */
+    width: fit-content;
+    max-width: 90%;
+    /* Limita el ancho del contenedor del logo en pantallas muy grandes */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    /* Sombra más pronunciada */
+}
+
+.header-logo {
+    /* La imagen del logo */
+    max-width: 250px;
+    /* Controla el tamaño MÁXIMO del logo */
+    height: auto;
+    /* Mantiene la proporción de la imagen */
+    display: block;
+    /* Asegura que la imagen sea un elemento de bloque */
 }
 
 header h2 {
     font-size: 1.3em;
-    /* Ligeramente más grande */
     color: #555;
     margin-top: 0;
     font-weight: normal;
 }
 
-/* Formularios y Selectores */
+/* --- Formularios y Selectores --- */
 .form-group {
     margin-bottom: 20px;
 }
@@ -132,7 +152,6 @@ header h2 {
     border-radius: 10px;
     padding: 25px;
     margin-top: 25px;
-    /* Reducimos el margen superior ya que el container tiene gap */
     text-align: center;
     min-height: 120px;
     /* Altura mínima un poco mayor */
@@ -199,7 +218,6 @@ header h2 {
 .action-buttons {
     text-align: center;
     margin-top: 25px;
-    /* Reducimos el margen superior ya que el container tiene gap */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -234,7 +252,6 @@ header h2 {
 
 .btn:disabled {
     background-color: #e0e0e0 !important;
-    /* Gris claro para botones deshabilitados */
     color: #999999 !important;
     cursor: not-allowed;
     transform: none;
@@ -261,6 +278,15 @@ header h2 {
     background-color: #218838;
 }
 
+/* Estilo para el icono de WhatsApp dentro del botón */
+#whatsappBtn .fab {
+    margin-right: 8px;
+    /* Espacio entre el icono y el texto */
+    vertical-align: middle;
+    /* Ayuda a alinear el icono con el texto */
+}
+
+
 /* Pie de Página */
 footer {
     text-align: center;
@@ -274,7 +300,7 @@ footer {
     font-size: 0.9em;
 }
 
-/* Responsivo para pantallas pequeñas */
+/* --- Responsive para pantallas pequeñas --- */
 @media (max-width: 768px) {
     .container {
         margin: 15px;
@@ -282,8 +308,18 @@ footer {
         gap: 20px;
     }
 
-    .logo {
-        font-size: 2.5em;
+    .logo-container {
+        padding: 10px 20px;
+        /* Menos padding en móviles */
+        margin-bottom: 15px;
+        /* Menos margen inferior en móviles */
+        max-width: 95%;
+        /* Ocupa más ancho en móviles */
+    }
+
+    .header-logo {
+        max-width: 180px;
+        /* Reduce el tamaño del logo en pantallas más pequeñas */
     }
 
     header h2 {
@@ -310,11 +346,5 @@ footer {
     .action-buttons {
         flex-direction: column;
         gap: 10px;
-    }
-
-    /* En algún lugar de tu style.css, por ejemplo, al final */
-    .btn .fab {
-        margin-right: 18px;
-        /* Espacio entre el icono y el texto */
     }
 }
