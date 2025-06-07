@@ -258,6 +258,33 @@ header h2 {
     box-shadow: none;
 }
 
+/* Estilo para los botones deshabilitados (existente) */
+.btn:disabled {
+    background-color: #e0e0e0;
+    /* Gris claro */
+    color: #999999;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* NUEVO: Estilo para enlaces que se comportan como deshabilitados */
+.btn.disabled-link {
+    /* Aplica este estilo a elementos con clase 'btn' Y 'disabled-link' */
+    background-color: #e0e0e0;
+    /* Fondo gris claro */
+    color: #999999;
+    /* Texto gris */
+    cursor: not-allowed;
+    /* Cursor de "no permitido" */
+    transform: none;
+    /* Elimina cualquier transformación al pasar el ratón */
+    box-shadow: none;
+    /* Elimina cualquier sombra */
+    pointer-events: none;
+    /* IMPLICANTE: Evita que el enlace sea clickeable */
+}
+
 .primary-btn {
     background-color: #000000;
     color: #ffffff;

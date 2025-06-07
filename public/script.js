@@ -1,5 +1,5 @@
 // Constantes y elementos del DOM
-// const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
+//const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
 const API_BASE_URL = 'https://ultratech-backend.onrender.com'; // URL de tu backend Flask
 const marcaSelect = document.getElementById('marcaSelect');
 const modeloSelect = document.getElementById('modeloSelect');
@@ -183,16 +183,13 @@ function updateCotizacionDisplay(message = 'Selecciona las opciones para ver tu 
 function enableActionButtons() {
     savePdfBtn.disabled = false;
     saveImageBtn.disabled = false;
-    whatsappBtn.disabled = false;
-    // Construir el enlace de WhatsApp con la información de la cotización
+    // whatsappBtn.disabled = false; // Ya no necesitamos esto directamente
+
+    // Eliminar la clase 'disabled-link' y configurar el href
+    whatsappBtn.classList.remove('disabled-link');
     if (currentCotizacion) {
         const whatsappMessage = encodeURIComponent(
-            `Hola Ultratech, me gustaría confirmar una cotización.\n\n` + // Salto de línea
-            `Dispositivo: ${currentCotizacion.nombre_marca} ${currentCotizacion.nombre_modelo}\n` +
-            `Reparación: ${currentCotizacion.tipo_reparacion}\n` +
-            `Precio Estimado: L. ${currentCotizacion.precio.toFixed(2)}\n` +
-            `Disponibilidad: ${currentCotizacion.disponibilidad}\n\n` +
-            `Mi nombre es [Tu Nombre] y me gustaría [añadir mi pregunta o agendar].` // Sugerencia para el cliente
+            // ... (tu mensaje de WhatsApp actual) ...
         );
         // Reemplaza 'XXXXXXXXXX' con el número de WhatsApp real de tu técnico
         whatsappBtn.href = `https://wa.me/95682307?text=${whatsappMessage}`;
@@ -202,7 +199,10 @@ function enableActionButtons() {
 function disableActionButtons() {
     savePdfBtn.disabled = true;
     saveImageBtn.disabled = true;
-    whatsappBtn.disabled = true;
+    // whatsappBtn.disabled = true; // Ya no necesitamos esto directamente
+
+    // Añadir la clase 'disabled-link' y resetear el href
+    whatsappBtn.classList.add('disabled-link');
     whatsappBtn.href = '#'; // Resetear el enlace de WhatsApp
 }
 
