@@ -189,7 +189,13 @@ function enableActionButtons() {
     whatsappBtn.classList.remove('disabled-link');
     if (currentCotizacion) {
         const whatsappMessage = encodeURIComponent(
-            // ... (tu mensaje de WhatsApp actual) ...
+            `Hola Ultratech, me gustaría confirmar una cotización.\n\n` + // Salto de línea
+            `Dispositivo: ${currentCotizacion.nombre_marca} ${currentCotizacion.nombre_modelo}\n` +
+            `Reparación: ${currentCotizacion.tipo_reparacion}\n` +
+            `Precio Estimado: L. ${currentCotizacion.precio.toFixed(2)}\n` +
+            `Disponibilidad: ${currentCotizacion.disponibilidad}\n\n` +
+            `Mi nombre es [Tu Nombre] y me gustaría [añadir mi pregunta o agendar].` // Sugerencia para el cliente
+
         );
         // Reemplaza 'XXXXXXXXXX' con el número de WhatsApp real de tu técnico
         whatsappBtn.href = `https://wa.me/95682307?text=${whatsappMessage}`;
