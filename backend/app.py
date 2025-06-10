@@ -19,8 +19,13 @@ ADMIN_API_KEY = os.environ.get('ADMIN_API_KEY')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+# app = Flask(__name__)
+# CORS(app, origins="*", allow_headers=["Content-Type", "X-Api-Key"]) # Configuración de CORS
+
+from flask_cors import CORS
+
 app = Flask(__name__)
-CORS(app, origins="*", allow_headers=["Content-Type", "X-Api-Key"]) # Configuración de CORS
+CORS(app, origins="*", supports_credentials=True, allow_headers=["Content-Type", "X-Api-Key"])
 
 # --- Clave Secreta de Administración ---
 ADMIN_API_KEY = os.environ.get('ADMIN_API_KEY', 'Tfebc6a3c-a8c0-4a88-b753-13982513feed')
