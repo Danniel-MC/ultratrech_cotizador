@@ -1,7 +1,8 @@
 // frontend/admin.js
 
 // Constantes y elementos del DOM
-const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
+// const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
+const API_BASE_URL = 'postgresql://db_ultratech_user:A6B2C1pUVXy4QJPOZak0Pj76Y875RAdy@dpg-d13loh0gjchc7390eq40-a.oregon-postgres.render.com/db_ultratech'; // URL de tu backend Flask
 ADMIN_API_KEY = 'Tfebc6a3c-a8c0-4a88-b753-13982513feed'  // ¡IMPORTANTE! Usa la misma clave que en app.py
 
 const reparacionForm = document.getElementById('reparacionForm');
