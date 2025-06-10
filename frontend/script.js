@@ -1,7 +1,9 @@
 // Constantes y elementos del DOM
-const API_BASE_URL = 'https://ultratech-backend.onrender.com'; // URL de tu backend Flask
+// const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
 // const API_BASE_URL = 'https://ultratech-backend.onrender.com'; // URL de tu backend Flask
 const marcaSelect = document.getElementById('marcaSelect');
+const ADMIN_API_KEY = 'Tfebc6a3c-a8c0-4a88-b753-13982513feed'  // ¡IMPORTANTE! Usa la misma clave que en app.py
+const API_BASE_URL = 'http://127.0.0.1:5000';
 const modeloSelect = document.getElementById('modeloSelect');
 const reparacionSelect = document.getElementById('reparacionSelect');
 const cotizacionDisplay = document.getElementById('cotizacionDisplay');

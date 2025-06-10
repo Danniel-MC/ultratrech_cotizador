@@ -1,9 +1,8 @@
 // frontend/admin.js
 
-// Constantes y elementos del DOM
-// const API_BASE_URL = 'http://127.0.0.1:5000'; // URL de tu backend Flask
-const API_BASE_URL = 'https://ultratech-backend.onrender.com'; // URL de tu backend Flask
-ADMIN_API_KEY = 'Tfebc6a3c-a8c0-4a88-b753-13982513feed'  // ¡IMPORTANTE! Usa la misma clave que en app.py
+
+const ADMIN_API_KEY = 'Tfebc6a3c-a8c0-4a88-b753-13982513feed'  // ¡IMPORTANTE! Usa la misma clave que en app.py
+const API_BASE_URL = 'http://127.0.0.1:5000'; // Asegúrate de que sea esta para local
 
 const reparacionForm = document.getElementById('reparacionForm');
 const formReparacionId = document.getElementById('formReparacionId');
@@ -16,13 +15,12 @@ const submitBtn = document.getElementById('submitBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
 const reparacionesTableBody = document.getElementById('reparacionesTableBody');
 const adminMessage = document.getElementById('adminMessage');
-const newModelBrandSelect = document.getElementById('newModelBrandSelect');
 const newModelName = document.getElementById('newModelName');
+const newModelBrandInput = document.getElementById('newModelBrandInput'); // CAMBIO: era newModelBrandSelect
 const modelForm = document.getElementById('modelForm');
 const modelMessage = document.getElementById('modelMessage');
 let editMode = false; // Variable para saber si estamos editando o agregando
 
-const newModelBrandInput = document.getElementById('newModelBrandInput'); // CAMBIO: era newModelBrandSelect
 
 
 
@@ -80,9 +78,7 @@ function showModelMessage(type, message) {
     }, 5000); // Ocultar mensaje después de 5 segundos
 }
 
-// ... (resto de tu código existente) ...
 
-// --- Carga de Modelos para el Formulario (similar al cotizador) ---
 async function loadModelosForForm() {
     formModeloSelect.innerHTML = '<option value="">Cargando modelos...</option>';
 
@@ -104,45 +100,52 @@ async function loadModelosForForm() {
     }
 }
 
-// ... (funciones loadModelosForForm, loadReparacionesTable existentes) ...
-
-async function loadBrandsForNewModel() {
-    newModelBrandSelect.innerHTML = '<option value="">Cargando marcas...</option>';
-    const marcas = await fetchAdminAPI('/admin/marcas', 'GET'); // Usamos el endpoint de admin/marcas
-
-    if (marcas && marcas.length > 0) {
-        newModelBrandSelect.innerHTML = '<option value="">-- Selecciona una marca --</option>';
-        marcas.forEach(marca => {
-            const option = document.createElement('option');
-            option.value = marca.id_marca;
-            option.textContent = marca.nombre_marca;
-            newModelBrandSelect.appendChild(option);
-        });
-    } else {
-        newModelBrandSelect.innerHTML = '<option value="">No hay marcas disponibles. Agrega Marcas primero.</option>';
-    }
-}
-
-// ... (Event listener para reparacionForm existente) ...
-
-// NUEVO: Manejo del Formulario (Agregar Modelo)
 modelForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const data = {
-        nombre_modelo: newModelName.value,
-        id_marca: parseInt(newModelBrandSelect.value)
+        nombre_modelo: newModelName.value.trim(), // Limpiar espacios
+        nombre_marca: newModelBrandInput.value.trim() // CAMBIO: obtener del input de texto
     };
 
-    const result = await fetchAdminAPI('/admin/modelo', 'POST', data); // Llama a tu nueva ruta POST
+    // Validar que ambos campos no estén vacíos
+    if (!data.nombre_modelo || !data.nombre_marca) {
+        showModelMessage('error', 'Por favor, completa el nombre del modelo y el nombre de la marca.');
+        return;
+    }
+
+    const result = await fetchAdminAPI('/admin/modelo', 'POST', data);
 
     if (result) {
         showModelMessage('success', result.message);
-        modelForm.reset(); // Limpiar formulario
+        modelForm.reset();
         // Recargar el select de modelos en el formulario de reparaciones, por si el nuevo modelo es relevante.
+        // Esto es crucial porque el formulario de reparaciones todavía usa un select.
         await loadModelosForForm();
     }
 });
+
+
+
+// ...existing code...
+
+// modelForm.addEventListener('submit', async (e) => {
+//     e.preventDefault();
+
+//     const data = {
+//         nombre_modelo: newModelName.value,
+//         id_marca: parseInt(newModelBrandInput.value)
+//     };
+
+//     const result = await fetchAdminAPI('/admin/modelo', 'POST', data); // Llama a tu nueva ruta POST
+
+//     if (result) {
+//         showModelMessage('success', result.message);
+//         modelForm.reset(); // Limpiar formulario
+//         // Recargar el select de modelos en el formulario de reparaciones, por si el nuevo modelo es relevante.
+//         await loadModelosForForm();
+//     }
+// });
 
 // ... (Event listener para reparacionesTableBody existente) ...
 
@@ -154,7 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadModelosForForm();
     await loadReparacionesTable();
     // NUEVO: Cargar marcas para el formulario de nuevo modelo
-    await loadBrandsForNewModel();
+    // await loadBrandsForNewModel();
 });
 
 // --- Carga de Reparaciones en la Tabla ---
@@ -276,39 +279,17 @@ cancelEditBtn.addEventListener('click', () => {
 
 // --- Inicialización ---
 document.addEventListener('DOMContentLoaded', async () => {
-    // Cargar modelos y luego las reparaciones
+    // Cargar modelos y reparaciones para la tabla
     await loadModelosForForm();
     await loadReparacionesTable();
+    // ELIMINAR o COMENTAR esta línea si loadBrandsForNewModel ya no existe
+    // await loadBrandsForNewModel();
 });
 
-modelForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
 
-    const data = {
-        nombre_modelo: newModelName.value.trim(), // Limpiar espacios
-        nombre_marca: newModelBrandInput.value.trim() // CAMBIO: obtener del input de texto
-    };
-
-    // Validar que ambos campos no estén vacíos
-    if (!data.nombre_modelo || !data.nombre_marca) {
-        showModelMessage('error', 'Por favor, completa el nombre del modelo y el nombre de la marca.');
-        return;
-    }
-
-    const result = await fetchAdminAPI('/admin/modelo', 'POST', data);
-
-    if (result) {
-        showModelMessage('success', result.message);
-        modelForm.reset();
-        // Recargar el select de modelos en el formulario de reparaciones, por si el nuevo modelo es relevante.
-        // Esto es crucial porque el formulario de reparaciones todavía usa un select.
-        await loadModelosForForm();
-    }
-});
 // --- Inicialización (modificada si eliminaste loadBrandsForNewModel) ---
 document.addEventListener('DOMContentLoaded', async () => {
     await loadModelosForForm();
     await loadReparacionesTable();
-    // REMOVER: Si ya no tienes un select de marca en el form de modelo, esta línea ya no va aquí
-    // await loadBrandsForNewModel();
+
 });

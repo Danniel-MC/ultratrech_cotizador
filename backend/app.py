@@ -1,4 +1,6 @@
 # backend/app.py (versión con SQLAlchemy y PostgreSQL)
+from dotenv import load_dotenv # <--- AÑADE ESTO
+load_dotenv()
 
 import os
 import sqlite3 # Dejamos sqlite3 temporalmente si aún lo necesitas para alguna lógica vieja o migración, pero ya no para la DB principal
@@ -8,14 +10,11 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError # Importamos excepciones de SQLAlchemy
+from sqlalchemy import UniqueConstraint
 
-# --- Configuración de la Base de Datos PostgreSQL ---
-# ¡IMPORTANTE! Reemplaza esto con la URL de tu base de datos de Render PostgreSQL
-# En un entorno de producción real, esto debería ser una variable de entorno.
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://db_ultratech_user:A6B2C1pUVXy4QJPOZak0Pj76Y875RAdy@dpg-d13loh0gjchc7390eq40-a.oregon-postgres.render.com/db_ultratech')
-# Para pruebas locales, si no quieres configurar una variable de entorno, puedes ponerla directamente:
-# DATABASE_URL = 'postgresql://render_user:render_password@external_host:external_port/render_database_name'
 
+DATABASE_URL = os.environ.get('DATABASE_URL') # Ahora leerá del .env o del entorno de Render
+ADMIN_API_KEY = os.environ.get('ADMIN_API_KEY')
 # Obtener la ruta del directorio actual del archivo app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,9 +43,11 @@ class Modelo(Base):
     __tablename__ = 'modelos'
     id_modelo = Column(Integer, primary_key=True, autoincrement=True)
     nombre_modelo = Column(String, nullable=False, unique=True)
+    # Añadimos la relación con Marca
     id_marca = Column(Integer, ForeignKey('marcas.id_marca'), nullable=False)
     marca = relationship("Marca", back_populates="modelos") # Relación con Marca
-    reparaciones = relationship("Reparacion", back_populates="modelo") # Relación con Reparacion
+    reparaciones = relationship("Reparacion", back_populates="modelo") 
+    __table_args__ = (UniqueConstraint('nombre_modelo', 'id_marca', name='_modelo_marca_uc'),)
 
 class Reparacion(Base):
     __tablename__ = 'reparaciones'
@@ -62,9 +63,6 @@ class Reparacion(Base):
 def create_tables():
     Base.metadata.create_all(engine)
     print("Tablas creadas o ya existentes en la base de datos PostgreSQL.")
-
-# --- Middleware para verificar la clave de administración (se mantiene) ---
-# ... (tu código para admin_required o la verificación directa en cada ruta) ...
 
 # --- Funciones de Utilidad para obtener sesión de DB ---
 def get_db_session():
@@ -350,42 +348,7 @@ def delete_reparacion(id_reparacion):
         session.close()
 
 
-# # --- NUEVA Ruta POST para agregar un nuevo Modelo ---
-# @app.route('/admin/modelo', methods=['POST'])
-# def add_modelo():
-    auth_header = request.headers.get('X-Api-Key')
-    if not auth_header or auth_header != ADMIN_API_KEY:
-        return jsonify({"error": "Acceso no autorizado."}), 401
 
-    data = request.get_json()
-    required_fields = ['nombre_modelo', 'id_marca']
-    if not all(field in data for field in required_fields):
-        return jsonify({"error": "Faltan campos requeridos: nombre_modelo, id_marca."}), 400
-
-    nombre_modelo = data['nombre_modelo']
-    id_marca = data['id_marca']
-
-    session = get_db_session()
-    try:
-        # Verificar si la marca existe
-        marca_existe = session.query(Marca).filter_by(id_marca=id_marca).first()
-        if not marca_existe:
-            return jsonify({"error": "El ID de marca especificado no existe."}), 400
-
-        # Crear el nuevo modelo
-        new_modelo = Modelo(nombre_modelo=nombre_modelo, id_marca=id_marca)
-        session.add(new_modelo)
-        session.commit()
-        return jsonify({"message": "Modelo agregado exitosamente", "id_modelo": new_modelo.id_modelo}), 201
-    except IntegrityError:
-        session.rollback()
-        return jsonify({"error": "Error: Un modelo con ese nombre ya existe."}), 400
-    except Exception as e:
-        session.rollback()
-        return jsonify({"error": f"Error al agregar modelo: {str(e)}"}), 500
-    finally:
-        session.close()
-# --- NUEVA Ruta POST para agregar una nueva Marca (asegúrate de que esta exista) ---
 @app.route('/admin/marca', methods=['POST'])
 def add_marca():
     auth_header = request.headers.get('X-Api-Key')
