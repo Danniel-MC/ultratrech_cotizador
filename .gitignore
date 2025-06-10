@@ -6,6 +6,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 
+ADMIN_API_KEY = 'Tfebc6a3c-a8c0-4a88-b753-13982513feed' # <--- ¡CAMBIA STO!
 # Ignorar archivos de base de datos SQLite locales si no quieres que suban
 # Solo si el archivo .db no lo necesitas en el repositorio remoto.
 # En tu caso, *necesitamos* el ultratech.db en Render, así que NO lo ignores.
